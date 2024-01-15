@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Page } from '@inertiajs/core'
+  import type { Page } from '@inertiajs/core'
   import App from './App.svelte'
 
   export let id: string

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Page } from '@inertiajs/core'
-  import { ComponentResolver } from '../types'
+  import type { Page } from '@inertiajs/core'
+  import type { ComponentResolver } from '../types'
   import Render, { h } from './Render.svelte'
   import store from '../store'
 
