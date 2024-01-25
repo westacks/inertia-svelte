@@ -79,10 +79,10 @@ export default async function createInertiaApp({
   }
 
   // Svelte types are written for the DOM API and not the SSR API.
-  const { html, head } = (SSR as any).render({ id, initialPage })
+  const { html, head, css } = (SSR as any).render({ id, initialPage })
 
   return {
     body: html,
-    head: [head],
+    head: [head, `<style data-vite-css>${css.code}</style>`],
   }
 }
