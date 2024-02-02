@@ -1,5 +1,5 @@
-import { VisitOptions, mergeDataIntoQueryString, router, shouldIntercept } from '@inertiajs/core'
-import { Action } from 'svelte/action'
+import { type VisitOptions, mergeDataIntoQueryString, router, shouldIntercept } from '@inertiajs/core'
+import type { Action } from 'svelte/action'
 
 interface ActionElement extends HTMLElement {
   href?: string

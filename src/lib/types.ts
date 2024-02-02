@@ -1,5 +1,5 @@
-import { PageProps } from '@inertiajs/core'
-import { ComponentType } from 'svelte'
+import type { PageProps } from '@inertiajs/core'
+import type { ComponentType } from 'svelte'
 
 export type ComponentResolver = (name: string) => ComponentType | Promise<ComponentType>
 

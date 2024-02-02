@@ -1,9 +1,9 @@
-import { Page, router, setupProgress } from '@inertiajs/core'
-import { ComponentType } from 'svelte'
+import { type Page, router, setupProgress } from '@inertiajs/core'
+import type { ComponentType } from 'svelte'
 import SvelteApp from './components/App.svelte'
 import SSR from './components/SSR.svelte'
 import store from './store'
-import { ComponentResolver, InertiaComponentType } from './types'
+import type { ComponentResolver, InertiaComponentType } from './types'
 
 interface CreateInertiaAppProps {
   id?: string

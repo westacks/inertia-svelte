@@ -1,6 +1,6 @@
-import { Page } from '@inertiajs/core'
+import type { Page } from '@inertiajs/core'
+import type { InertiaComponentType } from './types'
 import { writable } from 'svelte/store'
-import { InertiaComponentType } from './types'
 
 interface Store {
   component: InertiaComponentType | null

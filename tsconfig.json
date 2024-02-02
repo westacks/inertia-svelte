@@ -1,18 +1,19 @@
 {
-  "extends": "@tsconfig/svelte/tsconfig.json",
-  "include": ["src/index.ts", "src/server.ts"],
+  "extends": "./.svelte-kit/tsconfig.json",
   "compilerOptions": {
-    "noEmitOnError": true,
-
-    "lib": ["DOM", "DOM.Iterable", "ES2020"],
-    "target": "ES2020",
-
+		"allowJs": true,
+		"checkJs": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"resolveJsonModule": true,
+		"skipLibCheck": true,
+		"sourceMap": true,
+		"strict": true,
     "declaration": true,
     "declarationDir": "dist",
 
     "module": "ES2020",
     "moduleResolution": "Node",
-    "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
 
     "noImplicitThis": true,
@@ -20,9 +21,5 @@
     "noUnusedParameters": true,
     "preserveConstEnums": true,
     "removeComments": true,
-    "typeRoots": ["./node_modules/@types"],
-    // Overwrite the default config from @tsconfig/svelte for consistency
-    "verbatimModuleSyntax": false
-    // "strict": true
-  }
+  },
 }

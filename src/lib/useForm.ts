@@ -1,6 +1,7 @@
-import { ActiveVisit, Errors, Method, Page, PendingVisit, Progress, RequestPayload, VisitOptions, router } from '@inertiajs/core'
+import type { ActiveVisit, Errors, Method, Page, PendingVisit, Progress, RequestPayload, VisitOptions } from '@inertiajs/core'
+import { router } from '@inertiajs/core'
 import { cloneDeep, isEqual } from 'lodash'
-import { Writable, writable } from 'svelte/store'
+import { type Writable, writable } from 'svelte/store'
 import type { AxiosProgressEvent } from 'axios'
 
 interface InertiaFormProps<TForm extends Record<string, unknown>> {
@@ -51,7 +52,7 @@ export default function useForm<TForm extends Record<string, unknown>>(
     : null
   let defaults = typeof data === 'function' ? cloneDeep(data()) : cloneDeep(data)
   let cancelToken: { cancel: () => void } | null = null
-  let recentlySuccessfulTimeoutId: number | null = null
+  let recentlySuccessfulTimeoutId: ReturnType<typeof setTimeout> | null = null
   let transform = (data: TForm) => data as object
 
   const store = writable<InertiaFormProps<TForm>>({
