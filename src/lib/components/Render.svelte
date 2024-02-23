@@ -1,48 +1,36 @@
-<script context="module" lang="ts">
-  import type { PageProps } from '@inertiajs/core'
-  import type { InertiaComponentType } from '../types'
+<script lang="ts" context="module">
+    export type Layout = {
+        component: InertiaComponentType
+        props: PageProps,
+        child?: Layout
+    } | null
 
-  type RenderProps = {
-    component: InertiaComponentType
-    props?: PageProps
-    children?: RenderProps[]
-  } | null
+    export function h(component: InertiaComponentType | null, props: PageProps): Layout {
+        if (!component) return null;
+        if (!component.layout) return { component, props };
 
-  export const h = (component: InertiaComponentType, props?: PageProps, children?: RenderProps[]): RenderProps => {
-    return {
-      component,
-      ...(props ? { props } : {}),
-      ...(children ? { children } : {}),
+        return (Array.isArray(component.layout) ? component.layout : [component.layout])
+            .concat([component.default])
+            .reverse()
+            .reduce((child, layout) => ({component: layout, props, child}), null)
     }
-  }
 </script>
 
 <script lang="ts">
-  import store from '../store'
+    import type { InertiaComponentType } from '$lib/types';
+    import type { PageProps } from '@inertiajs/core';
 
-  export let component: InertiaComponentType
-  export let props: PageProps = {}
-  export let children: RenderProps[] = []
-
-  let prev = component
-  let key = new Date().getTime()
-
-  function updateKey(component: InertiaComponentType) {
-    if (prev !== component) {
-      prev = component
-      key = new Date().getTime()
-    }
-  }
-
-  $: updateKey(component)
+    export let component: InertiaComponentType | null = null
+    export let props: PageProps = {}
+    export let child: Layout = null
 </script>
 
-{#if $store.component}
-  {#key key}
-    <svelte:component this={component} {...props}>
-      {#each children as child, index (component && component.length === index ? $store.key : null)}
-        <svelte:self {...child} />
-      {/each}
-    </svelte:component>
-  {/key}
+{#if component}
+    {#key component}
+        <svelte:component this={component} {...props}>
+            {#if child}
+                <svelte:self {...child} />
+            {/if}
+        </svelte:component>
+    {/key}
 {/if}

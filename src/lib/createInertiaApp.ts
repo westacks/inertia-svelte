@@ -1,4 +1,4 @@
-import { type Page, router, setupProgress } from '@inertiajs/core'
+import { type Page, router, setupProgress, type InertiaAppResponse } from '@inertiajs/core'
 import type { ComponentType } from 'svelte'
 import SvelteApp from './components/App.svelte'
 import SSR from './components/SSR.svelte'
@@ -34,7 +34,7 @@ export default async function createInertiaApp({
   setup,
   progress = {},
   page,
-}: CreateInertiaAppProps): Promise<{ head: string[]; body: string } | SvelteApp | void> {
+}: CreateInertiaAppProps): InertiaAppResponse {
   const isServer = typeof window === 'undefined'
   const el = isServer ? null : document.getElementById(id)
   const initialPage = page || JSON.parse(el?.dataset.page ?? '{}')
@@ -68,7 +68,7 @@ export default async function createInertiaApp({
       setupProgress(progress)
     }
 
-    return setup({
+    setup({
       el,
       App: SvelteApp,
       props: {
@@ -76,6 +76,8 @@ export default async function createInertiaApp({
         resolveComponent,
       },
     })
+
+    return
   }
 
   // Svelte types are written for the DOM API and not the SSR API.
