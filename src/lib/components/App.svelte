@@ -4,8 +4,8 @@
   import Render, { h } from './Render.svelte'
   import store from '../store'
 
-  export let initialPage: Page | null = null
-  export let resolveComponent: ComponentResolver | null = null
+  export const initialPage: Page | null = null
+  export const resolveComponent: ComponentResolver | null = null
 
   $: child = $store.component && h($store.component.default, $store.page?.props)
   $: layout = $store.component && $store.component.layout
