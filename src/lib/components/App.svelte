@@ -1,11 +1,8 @@
 <script lang="ts">
-  import type { Page } from '@inertiajs/core'
-  import type { ComponentResolver } from '../types'
   import Render, { h } from './Render.svelte'
   import store from '../store'
 
-  export const initialPage: Page | null = null
-  export const resolveComponent: ComponentResolver | null = null
+  $$restProps;
 
   $: child = $store.component && h($store.component.default, $store.page?.props)
   $: layout = $store.component && $store.component.layout
@@ -19,4 +16,4 @@
     : child
 </script>
 
-<Render {...components} />
+<Render {...components}/>
