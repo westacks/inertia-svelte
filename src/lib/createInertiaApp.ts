@@ -1,22 +1,22 @@
 import { type Page, router, setupProgress, type InertiaAppResponse } from '@inertiajs/core'
-import type { ComponentType } from 'svelte'
+import type { ComponentResolver, InertiaComponentType } from './types'
+import type { RenderOutput } from 'svelte/server'
 import SvelteApp from './components/App.svelte'
 import SSR from './components/SSR.svelte'
 import store from './store'
-import type { ComponentResolver, InertiaComponentType } from './types'
 
-interface CreateInertiaAppProps {
+interface CreateInertiaAppProps<T = RenderOutput | SvelteApp | void> {
   id?: string
   resolve: ComponentResolver
   setup: (props: {
-    el: Element
+    el?: Element
     // @ts-ignore
-    App: ComponentType<SvelteApp>
-    props: {
+    App: SvelteApp|SSR
+    props?: {
+      id: string
       initialPage: Page
-      resolveComponent: ComponentResolver
     }
-  }) => void | SvelteApp
+  }) => T
   progress?:
     | false
     | {
@@ -28,16 +28,7 @@ interface CreateInertiaAppProps {
   page?: Page
 }
 
-export default async function createInertiaApp({
-  id = 'app',
-  resolve,
-  setup,
-  progress = {},
-  page,
-}: CreateInertiaAppProps): InertiaAppResponse {
-  const isServer = typeof window === 'undefined'
-  const el = isServer ? null : document.getElementById(id)
-  const initialPage = page || JSON.parse(el?.dataset.page ?? '{}')
+async function makeStore(resolve: ComponentResolver, initialPage: Page) {
   const resolveComponent = (name: string) => Promise.resolve(resolve(name))
 
   await resolveComponent(initialPage.component).then((initialComponent) => {
@@ -47,44 +38,53 @@ export default async function createInertiaApp({
     })
   })
 
-  if (!isServer) {
-    if (!el) {
-      throw new Error(`Element with ID "${id}" not found.`)
-    }
+  return resolveComponent
+}
 
-    router.init({
-      initialPage,
-      resolveComponent,
-      swapComponent: async ({ component, page, preserveState }) => {
-        store.update((current) => ({
-          component: component as InertiaComponentType,
-          page,
-          key: preserveState ? current.key : Date.now(),
-        }))
-      },
-    })
+async function createSpaApp({ id = 'app', resolve, progress, setup }: CreateInertiaAppProps<void | SvelteApp>): InertiaAppResponse {
+  const el = document.getElementById(id)
+  const initialPage = JSON.parse(el?.dataset.page ?? '{}')
 
-    if (progress) {
-      setupProgress(progress)
-    }
-
-    setup({
-      el,
-      App: SvelteApp,
-      props: {
-        initialPage,
-        resolveComponent,
-      },
-    })
-
-    return
+  if (!el) {
+    throw new Error(`Element with ID "${id}" not found.`)
   }
 
-  // Svelte types are written for the DOM API and not the SSR API.
-  const { html, head, css } = (SSR as any).render({ id, initialPage })
+  router.init({
+    initialPage,
+    resolveComponent: await makeStore(resolve, initialPage),
+    swapComponent: async ({ component, page, preserveState }) => {
+      store.update((current) => ({
+        component: component as InertiaComponentType,
+        page,
+        key: preserveState ? current.key : Date.now(),
+      }))
+    },
+  })
+
+  if (progress) {
+    setupProgress(progress)
+  }
+
+  setup({ el, App: SvelteApp })
+}
+
+async function createSsrApp({ id = 'app', page, setup, resolve }: CreateInertiaAppProps<RenderOutput>): InertiaAppResponse {
+  if (!page) {
+    throw new Error('Page is required for SSR')
+  }
+
+  await makeStore(resolve, page)
+
+  const {html, head} = setup({ App: SSR, props: {id, initialPage: page} })
 
   return {
     body: html,
-    head: [head, `<style data-vite-css>${css.code}</style>`],
+    head: [head],
   }
+}
+
+export default async function createInertiaApp(props: CreateInertiaAppProps): InertiaAppResponse {
+  return typeof window === 'undefined' ?
+    await createSsrApp(props as CreateInertiaAppProps<RenderOutput>) :
+    await createSpaApp(props as CreateInertiaAppProps<void | SvelteApp>)
 }
