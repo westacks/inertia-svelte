@@ -4,14 +4,14 @@ import type { RenderOutput } from 'svelte/server'
 import SvelteApp from './components/App.svelte'
 import SSR from './components/SSR.svelte'
 import store from './store'
+import type { ComponentType } from 'svelte'
 
 interface CreateInertiaAppProps<T = RenderOutput | SvelteApp | void> {
   id?: string
   resolve: ComponentResolver
   setup: (props: {
-    el?: Element
-    // @ts-ignore
-    App: SvelteApp|SSR
+    el: Element
+    App: ComponentType
     props?: {
       id: string
       initialPage: Page
@@ -65,6 +65,7 @@ async function createSpaApp({ id = 'app', resolve, progress, setup }: CreateIner
     setupProgress(progress)
   }
 
+  // @ts-ignore
   setup({ el, App: SvelteApp })
 }
 
@@ -75,6 +76,7 @@ async function createSsrApp({ id = 'app', page, setup, resolve }: CreateInertiaA
 
   await makeStore(resolve, page)
 
+  // @ts-ignore
   const {html, head} = setup({ App: SSR, props: {id, initialPage: page} })
 
   return {
