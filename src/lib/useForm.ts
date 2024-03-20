@@ -182,7 +182,6 @@ export default function useForm<TForm extends Record<string, unknown>>(
           this.setStore('processing', false)
           this.setStore('progress', null)
           this.clearErrors()
-          this.defaults()
           this.setStore('wasSuccessful', true)
           this.setStore('recentlySuccessful', true)
           recentlySuccessfulTimeoutId = setTimeout(() => this.setStore('recentlySuccessful', false), 2000)
