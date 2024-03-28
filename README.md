@@ -10,12 +10,12 @@ Visit [inertiajs.com](https://inertiajs.com/) to learn more.
 
 import { createInertiaApp } from '@westacks/inertia-svelte'
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
-import { hydrate } from 'svelte'
+import { mount } from "svelte";
 
 createInertiaApp({
     resolve: name => resolvePageComponent(`./pages/${name}.svelte`, import.meta.glob('./pages/**/*.svelte')),
     setup({ el, App, props }) {
-        hydrate(App, {target: el, props})
+        mount(App, {target: el, props})
     }
 })
 ```
