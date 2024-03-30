@@ -1,6 +1,7 @@
 import type { ActiveVisit, Errors, Method, Page, PendingVisit, Progress, RequestPayload, VisitOptions } from '@inertiajs/core'
 import { router } from '@inertiajs/core'
-import { cloneDeep, isEqual } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep';
+import isEqual from 'lodash/isEqual';
 import { type Writable, writable } from 'svelte/store'
 import type { AxiosProgressEvent } from 'axios'
 
