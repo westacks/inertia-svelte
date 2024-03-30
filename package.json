@@ -1,6 +1,6 @@
 {
   "name": "@westacks/inertia-svelte",
-  "version": "2.0.0-next.2",
+  "version": "2.0.0-next.3",
   "license": "MIT",
   "description": "The Svelte adapter for Inertia.js",
   "author": "Dmytro Morozov <puny.flash@gmail.com>",
